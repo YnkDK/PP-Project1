@@ -29,7 +29,7 @@ public class EmpiricalFPNN {
         RadioMap rm = new RadioMap(measurements);
         NearestNeighbour nn = new NearestNeighbour(rm);
 
-        GeoPosition best = nn.findNN(rm.getEntries().get(0).getEntries());
+        List<GeoPosition> best = nn.findNN(rm.getEntries().get(0).getEntries(), 10);
         System.out.println("best = " + best);
     }
 }
