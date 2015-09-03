@@ -3,7 +3,6 @@ package positioning.wifi.utils;
 
 import org.pi4.locutil.GeoPosition;
 import org.pi4.locutil.MACAddress;
-import org.pi4.locutil.trace.TraceEntry;
 
 import java.util.*;
 
@@ -13,6 +12,12 @@ public class NearestNeighbour {
         radioMap = rm;
     }
 
+    /**
+     * Finds the nearest neighbour to the given argument using the radio map
+     *
+     * @param sample The sample to which the nearest neighbour should be found
+     * @return The best guess, i.e. nearest neighbour
+     */
     public GeoPosition findNN(Map<MACAddress, Double> sample) {
         double best = Double.MAX_VALUE;
         RadioEntry bestEntry = null;
@@ -23,38 +28,47 @@ public class NearestNeighbour {
                 bestEntry = re;
             }
         }
-        System.out.println(best);
         assert bestEntry != null;
         return bestEntry.getPosition();
     }
 
-    public List<GeoPosition> findNN(Map<MACAddress, Double> sample, int k) {
-        List<GeoPosition> result = new ArrayList<>(k);
+    /**
+     * Finds the k-nearest neighbour to the given argument using the radio map
+     *
+     * @param sample The sample to which the nearest neighbour should be found
+     * @param k The number of nearest neighbors to find
+     * @return The k nearest neighbors (sorted in closest proximity)
+     */
+    public GeoPosition[] findNN(Map<MACAddress, Double> sample, int k) {
+        GeoPosition[] result = new GeoPosition[k];
         List<RadioEntry> radioEntries = radioMap.getEntries();
-        Queue<Tuple> distances = new PriorityQueue<>(radioEntries.size(), new CompareTuple());
+        Queue<DistanceToRadioEntryTuple> distances = new PriorityQueue<>(radioEntries.size(), new CompareTuple());
         for(RadioEntry re : radioEntries) {
             double d = re.distance(sample);
-            distances.add(new Tuple(re, d));
+            // Since we are using a priority queue and CompareTuple,
+            // the add methods ensures that the nearest neighbors are
+            // in the top of the queue
+            distances.add(new DistanceToRadioEntryTuple(re, d));
         }
         for(int i = 0; i < k; i++) {
-            result.add(distances.remove().x.getPosition());
+            result[i] = (distances.remove().x.getPosition());
         }
         return result;
     }
 
-    private class Tuple<X, Y> {
+    private class DistanceToRadioEntryTuple {
         public final RadioEntry x;
         public final double y;
-        public Tuple(RadioEntry x, double y) {
+        public DistanceToRadioEntryTuple(RadioEntry x, double y) {
             this.x = x;
             this.y = y;
         }
     }
 
-    private class CompareTuple implements Comparator<Tuple> {
+    private class CompareTuple implements Comparator<DistanceToRadioEntryTuple> {
 
         @Override
-        public int compare(Tuple t0, Tuple t1) {
+        public int compare(DistanceToRadioEntryTuple t0, DistanceToRadioEntryTuple t1) {
             return (int) (t0.y - t1.y);
         }
     }

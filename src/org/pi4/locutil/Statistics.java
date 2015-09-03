@@ -134,6 +134,30 @@ public class Statistics {
 		o /= (double) k;
 		return new GeoPosition(x, y, z, o % 360.0);
 	}
+
+    /**
+     * Averages k positions.
+     *
+     * @param values	the positions
+     * @return	the averaged position
+     */
+    public static GeoPosition avgPosition(GeoPosition[] values) {
+        int k = values.length;
+        if (k < 1)
+            throw new IllegalArgumentException("Length must be >= 1");
+        double x = 0, y = 0, z = 0, o = 0;
+        for (GeoPosition value : values) {
+            x += value.getX();
+            y += value.getY();
+            z += value.getZ();
+            o += value.getOrientation();
+        }
+        x /= (double) k;
+        y /= (double) k;
+        z /= (double) k;
+        o /= (double) k;
+        return new GeoPosition(x, y, z, o % 360.0);
+    }
 	
 	/**
 	 * Averages k positions.
