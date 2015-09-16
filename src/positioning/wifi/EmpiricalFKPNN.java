@@ -2,8 +2,8 @@ package positioning.wifi;
 
 import org.pi4.locutil.GeoPosition;
 import org.pi4.locutil.MACAddress;
-import org.pi4.locutil.PositioningError;
 import org.pi4.locutil.Statistics;
+import org.pi4.locutil.io.TraceGenerator;
 import org.pi4.locutil.trace.Parser;
 import org.pi4.locutil.trace.TraceEntry;
 import positioning.wifi.utils.NearestNeighbour;
@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 import java.util.*;
 
 /**
- * Main for Empirical
+ * empirical_FP_KNN
  */
 public class EmpiricalFKPNN {
     public static void main(String args[]) {
@@ -37,11 +37,21 @@ public class EmpiricalFKPNN {
         Parser onlineParser = new Parser(onlineFile);
 
         // Parse file
-        ArrayList<TraceEntry> offlineTrace = null;
-        ArrayList<TraceEntry> onlineTrace = null;
+        ArrayList<TraceEntry> offlineTrace;
+        ArrayList<TraceEntry> onlineTrace;
+
+        //Construct trace generator
+        TraceGenerator tg;
+
         try {
-            offlineTrace = offlineParser.parse();
-            onlineTrace = onlineParser.parse();
+            int offlineSize = 25;
+            int onlineSize = 5;
+            tg = new TraceGenerator(offlineParser, onlineParser,offlineSize,onlineSize);
+
+            tg.generate();
+
+            offlineTrace = tg.getOffline();
+            onlineTrace = tg.getOnline();
 
             // Build RadioMap
             RadioMap radioMap = new RadioMap(offlineTrace);
@@ -62,7 +72,7 @@ public class EmpiricalFKPNN {
                 GeoPosition estimatedPosition = Statistics.avgPosition(nn.findNN(sample, k));
                 GeoPosition realPosition = traceEntry.getGeoPosition();
 
-                writer.println(realPosition.getX() + " " + realPosition.getY() + " " + realPosition.getZ() + " " + estimatedPosition.getX() + " " + estimatedPosition.getY() + " " + estimatedPosition.getZ());
+                writer.println(realPosition.  getX() + " " + realPosition.getY() + " " + realPosition.getZ() + " " + estimatedPosition.getX() + " " + estimatedPosition.getY() + " " + estimatedPosition.getZ());
             }
 
             writer.close();
