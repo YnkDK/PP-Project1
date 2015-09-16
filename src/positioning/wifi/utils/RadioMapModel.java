@@ -1,3 +1,5 @@
+package positioning.wifi.utils;
+
 import org.pi4.locutil.GeoPosition;
 import org.pi4.locutil.MACAddress;
 
@@ -10,12 +12,12 @@ import java.util.Map;
  * Created by Casper on 12-09-2015.
  */
 public class RadioMapModel {
-    APParser apParser;
+    APParser2 apParser;
 
     public RadioMapModel() throws Exception {
         // Data file
         String apPath =  "data/MU.AP.positions";
-        apParser = new APParser(new File(apPath));
+        apParser = new APParser2(new File(apPath));
     }
 
     public Map<GeoPosition, Map<MACAddress, Double>> constructRadioMap(List<GeoPosition> positions) {

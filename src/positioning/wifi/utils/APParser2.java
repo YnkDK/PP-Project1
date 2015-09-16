@@ -1,3 +1,5 @@
+package positioning.wifi.utils;
+
 import org.pi4.locutil.GeoPosition;
 import org.pi4.locutil.MACAddress;
 
@@ -12,10 +14,10 @@ import java.util.Scanner;
 /**
  * Created by Casper on 12-09-2015.
  */
-public class APParser {
+public class APParser2 {
     Map<MACAddress, GeoPosition> apMap = new HashMap<MACAddress, GeoPosition>();
 
-    public APParser(File f) throws Exception {
+    public APParser2(File f) throws Exception {
         Scanner sc = new Scanner(f);
 
         // Skip first line
