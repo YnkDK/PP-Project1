@@ -50,6 +50,8 @@ public class EmpiricalFPNN {
             // Print to file
             PrintWriter writer = new PrintWriter("Empirical_FP_1_NN", "UTF-8");
 
+            // Loop through all online traces and find nearest neighbour based on the offline
+            // measurements.
             for(TraceEntry traceEntry : onlineTrace) {
                 Map<MACAddress, Double> sample = new HashMap<>();
 
