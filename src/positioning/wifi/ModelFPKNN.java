@@ -2,11 +2,18 @@ package positioning.wifi;
 
 import org.pi4.locutil.GeoPosition;
 import org.pi4.locutil.MACAddress;
+import org.pi4.locutil.Statistics;
+import org.pi4.locutil.io.TraceGenerator;
 import org.pi4.locutil.trace.Parser;
+import org.pi4.locutil.trace.TraceEntry;
+import positioning.wifi.utils.NearestNeighbour;
+import positioning.wifi.utils.RadioEntry;
 import positioning.wifi.utils.RadioMapModel;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,8 +44,16 @@ public class ModelFPKNN {
         File onlineFile = new File(onlinePath);
         Parser onlineParser = new Parser(onlineFile);
 
+        //Construct trace generator
+        TraceGenerator tg;
 
         try {
+            int offlineSize = 25;
+            int onlineSize = 5;
+            tg = new TraceGenerator(offlineParser, onlineParser,offlineSize,onlineSize);
+
+            tg.generate();
+
             // Construct RadioMapModel
             RadioMapModel radioMapModel = new RadioMapModel();
 
@@ -51,9 +66,31 @@ public class ModelFPKNN {
             }
 
             // Generate radio map based on model
-            Map<GeoPosition, Map<MACAddress, Double>> radioMap = radioMapModel.constructRadioMap(positions);
+            List<RadioEntry> radioMap = radioMapModel.constructRadioMap(positions);
 
             // NearNeighbour
+            NearestNeighbour nn = new NearestNeighbour(radioMap);
+
+            // Print to file
+            PrintWriter writer = new PrintWriter("Model_FP_" + k + "_NN", "UTF-8");
+
+            for(TraceEntry traceEntry : tg.getOnline()) {
+                Map<MACAddress, Double> sample = new HashMap<>();
+
+                for(MACAddress mac : traceEntry.getSignalStrengthSamples().getSortedAccessPoints()) {
+                    sample.put(mac, traceEntry.getSignalStrengthSamples().getFirstSignalStrength(mac));
+                }
+
+                GeoPosition estimatedPosition = Statistics.avgPosition(nn.findNN(sample, k));
+                GeoPosition realPosition = traceEntry.getGeoPosition();
+
+                writer.println(realPosition.  getX() + " " + realPosition.getY() + " " + realPosition.getZ() + " " + estimatedPosition.getX() + " " + estimatedPosition.getY() + " " + estimatedPosition.getZ());
+            }
+
+            writer.close();
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

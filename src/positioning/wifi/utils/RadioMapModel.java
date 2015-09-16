@@ -5,6 +5,7 @@ import org.pi4.locutil.MACAddress;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,11 +21,12 @@ public class RadioMapModel {
         apParser = new APParser2(new File(apPath));
     }
 
-    public Map<GeoPosition, Map<MACAddress, Double>> constructRadioMap(List<GeoPosition> positions) {
-        Map<GeoPosition, Map<MACAddress, Double>> radioMap = new HashMap<>();
+    public List<RadioEntry> constructRadioMap(List<GeoPosition> positions) {
+        List<RadioEntry> radioMap  = new LinkedList<>();
 
-        double threshold = 25; // in meter
+        double threshold = 0; // SignalStrength
         // Iterate all positions and calculate signal to all AP, discard those under the threshold
+
         for(GeoPosition pos : positions) {
             Map<MACAddress, Double> signalMap = new HashMap<>();
 
@@ -33,11 +35,12 @@ public class RadioMapModel {
                 double distance = apMap.get(ap_mac).distance(pos);
                 double signalStrength = computeSignalStrength(distance);
 
-                if(distance < threshold) {
+                if(signalStrength < threshold) {
                     signalMap.put(ap_mac, signalStrength);
                 }
+
             }
-            radioMap.put(pos, signalMap);
+            radioMap.add(new RadioEntry(pos, signalMap));
         }
 
         return radioMap;

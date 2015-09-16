@@ -7,9 +7,9 @@ import org.pi4.locutil.MACAddress;
 import java.util.*;
 
 public class NearestNeighbour {
-    private RadioMap radioMap;
-    public NearestNeighbour(RadioMap rm) {
-        radioMap = rm;
+    private List<RadioEntry> radioMapEntries;
+    public NearestNeighbour(List<RadioEntry> radioMapEntries) {
+        this.radioMapEntries = radioMapEntries;
     }
 
     /**
@@ -21,7 +21,7 @@ public class NearestNeighbour {
     public GeoPosition findNN(Map<MACAddress, Double> sample) {
         double best = Double.MAX_VALUE;
         RadioEntry bestEntry = null;
-        for(RadioEntry re : radioMap.getEntries()) {
+        for(RadioEntry re : radioMapEntries) {
             double d = re.distance(sample);
             if(d < best) {
                 best = d;
@@ -41,9 +41,8 @@ public class NearestNeighbour {
      */
     public GeoPosition[] findNN(Map<MACAddress, Double> sample, int k) {
         GeoPosition[] result = new GeoPosition[k];
-        List<RadioEntry> radioEntries = radioMap.getEntries();
-        Queue<DistanceToRadioEntryTuple> distances = new PriorityQueue<>(radioEntries.size(), new CompareTuple());
-        for(RadioEntry re : radioEntries) {
+        Queue<DistanceToRadioEntryTuple> distances = new PriorityQueue<>(radioMapEntries.size(), new CompareTuple());
+        for(RadioEntry re : radioMapEntries) {
             double d = re.distance(sample);
             // Since we are using a priority queue and CompareTuple,
             // the add methods ensures that the nearest neighbors are

@@ -57,7 +57,7 @@ public class EmpiricalFKPNN {
             RadioMap radioMap = new RadioMap(offlineTrace);
 
 
-            NearestNeighbour nn = new NearestNeighbour(radioMap);
+            NearestNeighbour nn = new NearestNeighbour(radioMap.getEntries());
 
             // Print to file
             PrintWriter writer = new PrintWriter("Empirical_FP_" + k + "_NN", "UTF-8");

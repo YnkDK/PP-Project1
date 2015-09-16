@@ -45,7 +45,7 @@ public class EmpiricalFPNN {
             onlineTrace = tg.getOnline();
 
             RadioMap rm = new RadioMap(offlineTrace);
-            NearestNeighbour nn = new NearestNeighbour(rm);
+            NearestNeighbour nn = new NearestNeighbour(rm.getEntries());
 
             // Print to file
             PrintWriter writer = new PrintWriter("Empirical_FP_1_NN", "UTF-8");
