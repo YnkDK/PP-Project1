@@ -11,11 +11,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class RadioMap {
+public class RadioMapEmpirical {
     private List<RadioEntry> radioMap;
 //    private Map<GeoPosition, Map<MACAddress, Double>> radioMap;
 
-    public RadioMap(List<TraceEntry> traceEntries) {
+    public RadioMapEmpirical(List<TraceEntry> traceEntries) {
 
         // For each position we create a map that has a list with signal strengths for each AP.
         Map<GeoPosition, Map<MACAddress, List<Double>>> geoPositionMapToSignal = new HashMap<>();

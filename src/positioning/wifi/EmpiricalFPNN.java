@@ -7,7 +7,7 @@ import org.pi4.locutil.io.TraceGenerator;
 import org.pi4.locutil.trace.Parser;
 import org.pi4.locutil.trace.TraceEntry;
 import positioning.wifi.utils.NearestNeighbour;
-import positioning.wifi.utils.RadioMap;
+import positioning.wifi.utils.RadioMapEmpirical;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -35,7 +35,8 @@ public class EmpiricalFPNN {
         TraceGenerator tg;
 
         try {
-            int offlineSize = 25;
+            int offlineSize = 25; // For each position, generate 25 measurements. Each measurement consist of
+                                  // a single signal strength measurement to each AP.
             int onlineSize = 5;
             tg = new TraceGenerator(offlineParser, onlineParser, offlineSize, onlineSize);
 
@@ -44,14 +45,15 @@ public class EmpiricalFPNN {
             offlineTrace = tg.getOffline();
             onlineTrace = tg.getOnline();
 
-            RadioMap rm = new RadioMap(offlineTrace);
+            RadioMapEmpirical rm = new RadioMapEmpirical(offlineTrace);
             NearestNeighbour nn = new NearestNeighbour(rm.getEntries());
 
             // Print to file
             PrintWriter writer = new PrintWriter("Empirical_FP_1_NN", "UTF-8");
 
             // Loop through all online traces and find nearest neighbour based on the offline
-            // measurements.
+            // measurements. Write estimated position based on k-nearest neighbours and the real
+            // position to a file.
             for(TraceEntry traceEntry : onlineTrace) {
                 Map<MACAddress, Double> sample = new HashMap<>();
 

@@ -7,7 +7,7 @@ import org.pi4.locutil.io.TraceGenerator;
 import org.pi4.locutil.trace.Parser;
 import org.pi4.locutil.trace.TraceEntry;
 import positioning.wifi.utils.NearestNeighbour;
-import positioning.wifi.utils.RadioMap;
+import positioning.wifi.utils.RadioMapEmpirical;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -53,11 +53,11 @@ public class EmpiricalFKPNN {
             offlineTrace = tg.getOffline();
             onlineTrace = tg.getOnline();
 
-            // Build RadioMap
-            RadioMap radioMap = new RadioMap(offlineTrace);
+            // Build RadioMapEmpirical
+            RadioMapEmpirical radioMapEmpirical = new RadioMapEmpirical(offlineTrace);
 
 
-            NearestNeighbour nn = new NearestNeighbour(radioMap.getEntries());
+            NearestNeighbour nn = new NearestNeighbour(radioMapEmpirical.getEntries());
 
             // Print to file
             PrintWriter writer = new PrintWriter("Empirical_FP_" + k + "_NN", "UTF-8");
