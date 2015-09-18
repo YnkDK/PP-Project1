@@ -36,7 +36,7 @@ public class EmpiricalFPNN {
 
         try {
             int offlineSize = 25; // For each position, generate 25 measurements. Each measurement consist of
-                                  // a single signal strength measurement to each AP.
+                                  // a single signal strength measurement to an AP.
             int onlineSize = 5;
             tg = new TraceGenerator(offlineParser, onlineParser, offlineSize, onlineSize);
 
@@ -57,6 +57,7 @@ public class EmpiricalFPNN {
             for(TraceEntry traceEntry : onlineTrace) {
                 Map<MACAddress, Double> sample = new HashMap<>();
 
+                // A sample is a map with reachable APs and the signal strength to the APs
                 for(MACAddress mac : traceEntry.getSignalStrengthSamples().getSortedAccessPoints()) {
                     sample.put(mac, traceEntry.getSignalStrengthSamples().getFirstSignalStrength(mac));
                 }

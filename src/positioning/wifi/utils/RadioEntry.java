@@ -25,6 +25,7 @@ public class RadioEntry {
         return position;
     }
 
+    // Euclidean distance
     public double distance(Map<MACAddress, Double> other) {
         double dist = 0;
         for(MACAddress mac : other.keySet()) {
