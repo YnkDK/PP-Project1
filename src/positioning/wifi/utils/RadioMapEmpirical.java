@@ -29,6 +29,7 @@ public class RadioMapEmpirical {
             }
 
             SignalStrengthSamples samples = te.getSignalStrengthSamples();
+
             // Loop through all AP's which is reachable from the position.
             for(MACAddress mac : samples.getSortedAccessPoints()) {
                 Map<MACAddress, List<Double>> signals = geoPositionMapToSignal.get(gp);
@@ -41,6 +42,7 @@ public class RadioMapEmpirical {
         }
 
         // Loop through all the entries in the map created above.
+        // TODO: What about access points which are not in the set of known AP's?
         for(Map.Entry<GeoPosition, Map<MACAddress, List<Double>>> entry : geoPositionMapToSignal.entrySet()) {
             GeoPosition currentPos = entry.getKey();
             Map<MACAddress, List<Double>> value = entry.getValue();
@@ -48,6 +50,8 @@ public class RadioMapEmpirical {
             // For each AP, find the average of all the signal strengths to that AP.
             Map<MACAddress, Double> avgSignal = new HashMap<>();
             for(Map.Entry<MACAddress, List<Double>> macStrength : value.entrySet()) {
+                // Max size of macStrength.getValue() is the same as the value of the "offline set"
+                // Only happens if an AP is reached on every "size of offline set" measurements.
                 avgSignal.put(macStrength.getKey(), Statistics.avg(macStrength.getValue()));
             }
 

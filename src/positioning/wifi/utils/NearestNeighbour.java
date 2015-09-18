@@ -18,19 +18,19 @@ public class NearestNeighbour {
      * @param sample The sample to which the nearest neighbour should be found
      * @return The best guess, i.e. nearest neighbour
      */
-    public GeoPosition findNN(Map<MACAddress, Double> sample) {
-        double best = Double.MAX_VALUE;
-        RadioEntry bestEntry = null;
-        for(RadioEntry re : radioMapEntries) {
-            double d = re.distance(sample);
-            if(d < best) {
-                best = d;
-                bestEntry = re;
-            }
-        }
-        assert bestEntry != null;
-        return bestEntry.getPosition();
-    }
+//    public GeoPosition findNN(Map<MACAddress, Double> sample) {
+//        double best = Double.MAX_VALUE;
+//        RadioEntry bestEntry = null;
+//        for(RadioEntry re : radioMapEntries) {
+//            double d = re.distance(sample);
+//            if(d < best) {
+//                best = d;
+//                bestEntry = re;
+//            }
+//        }
+//        assert bestEntry != null;
+//        return bestEntry.getPosition();
+//    }
 
     /**
      * Finds the k-nearest neighbour to the given argument using the radio map
@@ -40,6 +40,7 @@ public class NearestNeighbour {
      * @return The k nearest neighbors (sorted in closest proximity)
      */
     public GeoPosition[] findNN(Map<MACAddress, Double> sample, int k) {
+        //Estimated positions
         GeoPosition[] result = new GeoPosition[k];
         Queue<DistanceToRadioEntryTuple> distances = new PriorityQueue<>(radioMapEntries.size(), new CompareTuple());
         for(RadioEntry re : radioMapEntries) {
@@ -49,6 +50,7 @@ public class NearestNeighbour {
             // in the top of the queue
             distances.add(new DistanceToRadioEntryTuple(re, d));
         }
+        // Find the k-nearest entries
         for(int i = 0; i < k; i++) {
             result[i] = (distances.remove().x.getPosition());
         }
