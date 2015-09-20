@@ -3,11 +3,13 @@
         <echo>
 Project 1 in Pervasive Positioning for group 13.
     Development Targets:
-        clean:  Remove all intermediate files and folders
+        clean:          Remove all intermediate files and folders
 
     Execution Targets:
-        model [k] [runs]
-        empirical [k] [runs]
+        model:          Runs the model data for a given k (default:3) and num_runs (default:100)
+        model.all:      Runs the model data for k in [1..5] and generates the needed plots
+        empirical:      Runs the empirical data for a given k (default:3) and num_runs (default:100)
+        empirical.all:  Runs the empirical data for k in [1..5] and generates the needed plots
         </echo>
     </target>
 
@@ -39,8 +41,8 @@ Project 1 in Pervasive Positioning for group 13.
     <property name="num_runs" value="100" />
 
     <target name="model"
-            depends="clean,build.src"
-            description="--> Cleans and rebuilds the project">
+            depends="prepare,build.src"
+            description="--> Runs the model data for a given k (default:3) and num_runs (default:100)">
         <java classpathref="run.path.id"
               classname="Main">
             <arg value="model" />
@@ -50,42 +52,51 @@ Project 1 in Pervasive Positioning for group 13.
     </target>
 
     <target name="model.all"
-            depends="clean,build.src"
-            description="--> Cleans and rebuilds the project">
+            depends="prepare,build.src"
+            description="--> Runs the model data for k in [1..5] and generates the needed plots">
+        <!-- Delete the output file if present -->
+        <delete file="output/model_FP_NN" />
+        <!-- Run for k=1 -->
         <java classpathref="run.path.id"
               classname="Main">
             <arg value="model" />
             <arg value="1" />
             <arg value="${num_runs}" />
         </java>
+        <!-- Run for k=2 -->
         <java classpathref="run.path.id"
               classname="Main">
             <arg value="model" />
             <arg value="2" />
             <arg value="${num_runs}" />
         </java>
+        <!-- Run for k=3 -->
         <java classpathref="run.path.id"
               classname="Main">
             <arg value="model" />
             <arg value="3" />
             <arg value="${num_runs}" />
         </java>
+        <!-- Run for k=4 -->
         <java classpathref="run.path.id"
               classname="Main">
             <arg value="model" />
             <arg value="4" />
             <arg value="${num_runs}" />
         </java>
+        <!-- Run for k=5 -->
         <java classpathref="run.path.id"
               classname="Main">
             <arg value="model" />
             <arg value="5" />
             <arg value="${num_runs}" />
         </java>
+        <!-- Generate cumulative error plot -->
         <exec executable="Rscript">
             <arg value="plotScoreNN.R"/>
             <arg value="output/model_FP_NN"/>
         </exec>
+        <!-- Generate best k plot -->
         <exec executable="Rscript">
             <arg value="plotMedianK.R"/>
             <arg value="output/model_FP_NN"/>
@@ -94,7 +105,7 @@ Project 1 in Pervasive Positioning for group 13.
 
     <target name="empirical"
             depends="clean,build.src"
-            description="--> Builds the project and runs for a specific k and number of runs">
+            description="--> Runs the empirical data for a given k (default:3) and num_runs (default:100)">
         <java classpathref="run.path.id"
               classname="Main">
             <arg value="empirical" />
@@ -105,7 +116,7 @@ Project 1 in Pervasive Positioning for group 13.
 
     <target name="empirical.all"
             depends="build.src"
-            description="--> Builds the project and generates all needed data">
+            description="--> Runs the empirical data for k in [1..5] and generates the needed plots">
         <java classpathref="run.path.id"
               classname="Main">
             <arg value="empirical" />
