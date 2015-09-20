@@ -5,7 +5,7 @@ import org.pi4.locutil.MACAddress;
 import org.pi4.locutil.io.TraceGenerator;
 import org.pi4.locutil.trace.Parser;
 import org.pi4.locutil.trace.TraceEntry;
-import positioning.wifi.utils.APParser2;
+import positioning.wifi.utils.APParser;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -39,7 +39,7 @@ public class SignalStrengthPlot {
 
 
                 // Get AP
-            APParser2 apParser = new APParser2(new File(apPath));
+            APParser apParser = new APParser(new File(apPath));
             Map<MACAddress, GeoPosition> apMap = apParser.getAPMap();
 
             // Print to file

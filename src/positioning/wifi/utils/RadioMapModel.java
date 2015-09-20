@@ -13,20 +13,20 @@ import java.util.Map;
  * Created by Casper on 12-09-2015.
  */
 public class RadioMapModel {
-    APParser2 apParser;
+    APParser apParser;
 
     public RadioMapModel() throws Exception {
         // Data file
         String apPath =  "data/MU.AP.positions";
-        apParser = new APParser2(new File(apPath));
+        apParser = new APParser(new File(apPath));
     }
 
     public List<RadioEntry> constructRadioMap(List<GeoPosition> positions) {
         List<RadioEntry> radioMap  = new LinkedList<>();
 
-        double threshold = 0; // SignalStrength
+        double threshold = -100; // SignalStrength
         // Iterate all positions and calculate signal to all AP, discard those under the threshold
-
+        int removed =0;
         for(GeoPosition pos : positions) {
             Map<MACAddress, Double> signalMap = new HashMap<>();
 
@@ -34,15 +34,16 @@ public class RadioMapModel {
             for(MACAddress ap_mac : apMap.keySet()) {
                 double distance = apMap.get(ap_mac).distance(pos);
                 double signalStrength = computeSignalStrength(distance);
-
-                if(signalStrength < threshold) {
+                if(signalStrength > threshold) {
                     signalMap.put(ap_mac, signalStrength);
+                } else {
+                    removed++;
                 }
 
             }
             radioMap.add(new RadioEntry(pos, signalMap));
         }
-
+        System.out.println("Size: " + radioMap.size() + " Removed: " + removed);
         return radioMap;
     }
 

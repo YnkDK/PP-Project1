@@ -117,6 +117,8 @@ Project 1 in Pervasive Positioning for group 13.
     <target name="empirical.all"
             depends="build.src"
             description="--> Runs the empirical data for k in [1..5] and generates the needed plots">
+        <!-- Delete the output file if present -->
+        <delete file="output/empirical_FP_NN" />
         <java classpathref="run.path.id"
               classname="Main">
             <arg value="empirical" />
