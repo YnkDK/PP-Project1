@@ -78,7 +78,7 @@ public class ModelFPKNN {
                 Map<MACAddress, Double> sample = new HashMap<>();
 
                 for(MACAddress mac : traceEntry.getSignalStrengthSamples().getSortedAccessPoints()) {
-                    sample.put(mac, traceEntry.getSignalStrengthSamples().getFirstSignalStrength(mac));
+                    sample.put(mac, traceEntry.getSignalStrengthSamples().getAverageSignalStrength(mac));
                 }
 
                 GeoPosition estimatedPosition = Statistics.avgPosition(nn.findNN(sample, k));
