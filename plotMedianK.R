@@ -6,7 +6,7 @@ data$error <- sqrt(
   (data$r.x - data$e.x) * (data$r.x - data$e.x) +
     (data$r.y - data$e.y) * (data$r.y - data$e.y) +
     (data$r.z - data$e.z) * (data$r.z - data$e.z) )
-
+print("Plotting median accuracy for 0 < k < 6")
 d <- c(
   1, median(data[data$k == 1, "error"]),
   2, median(data[data$k == 2, "error"]),
@@ -16,10 +16,10 @@ d <- c(
 )
 mat <- as.data.frame(matrix(d, ncol=2, nrow=5, byrow = TRUE))
 
-pdf("median_acc_empirical.pdf", height = 8.27, width = 11.69)
-plot(V2 ~ V1, mat, main = "Median accuracy for empirical data",
+pdf(paste(args[1], "_median_acc.pdf"), height = 8.27, width = 11.69)
+plot(V2 ~ V1, mat,
        xlab = "k",
        ylab = "Error in meters",
        type="l"
 )
-dev.off()
+garbage <- dev.off()

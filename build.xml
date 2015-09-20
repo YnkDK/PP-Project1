@@ -88,7 +88,7 @@ Project 1 in Pervasive Positioning for group 13.
         </exec>
         <exec executable="Rscript">
             <arg value="plotMedianK.R"/>
-            <arg value="output/empirical_FP_NN"/>
+            <arg value="output/model_FP_NN"/>
         </exec>
     </target>
 
