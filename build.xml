@@ -1,0 +1,94 @@
+<project name="wifi" default="help" basedir=".">
+    <target name="help">
+        <echo>
+Project 1 in Pervasive Positioning for group 13.
+    Development Targets:
+        clean:  Remove all intermediate files and folders
+
+    Execution Targets:
+        model [k] [runs]
+        empirical [k] [runs]
+        </echo>
+    </target>
+
+    <!-- Folder properties -->
+    <property name="src.dir" value="src" />
+    <property name="build.dir" value="build" />
+
+    <path id="run.path.id">
+        <path location="${build.dir}" />
+    </path>
+
+    <target name="clean"
+            description="--> Clean everything in build directory and output directory">
+        <delete dir="${build.dir}" />
+    </target>
+
+    <target name="prepare">
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="output" />
+    </target>
+
+    <target name="build.src" depends="prepare"
+            description="Build the source files">
+        <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false" />
+    </target>
+
+    <!-- Set default parameters -->
+    <property name="k" value="3" />
+    <property name="num_runs" value="100" />
+
+    <target name="model"
+            depends="clean,build.src"
+            description="--> Cleans and rebuilds the project">
+        <java classpathref="run.path.id"
+              classname="Main">
+            <arg value="model" />
+            <arg value="${k}" />
+            <arg value="${num_runs}" />
+        </java>
+        <exec executable="/usr/bin/Rscript">
+            <arg value="plotScoreNN.R"/>
+            <arg value="output/model_FP_NN"/>
+        </exec>
+    </target>
+
+    <target name="model.all"
+            depends="clean,build.src"
+            description="--> Cleans and rebuilds the project">
+        <java classpathref="run.path.id"
+              classname="Main">
+            <arg value="model" />
+            <arg value="1" />
+            <arg value="${num_runs}" />
+        </java>
+        <java classpathref="run.path.id"
+              classname="Main">
+            <arg value="model" />
+            <arg value="2" />
+            <arg value="${num_runs}" />
+        </java>
+        <java classpathref="run.path.id"
+              classname="Main">
+            <arg value="model" />
+            <arg value="3" />
+            <arg value="${num_runs}" />
+        </java>
+        <java classpathref="run.path.id"
+              classname="Main">
+            <arg value="model" />
+            <arg value="4" />
+            <arg value="${num_runs}" />
+        </java>
+        <java classpathref="run.path.id"
+              classname="Main">
+            <arg value="model" />
+            <arg value="5" />
+            <arg value="${num_runs}" />
+        </java>
+        <exec executable="/usr/bin/Rscript">
+            <arg value="plotScoreNN.R"/>
+            <arg value="output/model_FP_NN"/>
+        </exec>
+    </target>
+</project>
