@@ -24,9 +24,11 @@ public class RadioMapModel {
     public List<RadioEntry> constructRadioMap(List<GeoPosition> positions) {
         List<RadioEntry> radioMap  = new LinkedList<>();
 
-        double threshold = -100; // SignalStrength
+        // Set signal strength threshold to -70 according to:
+        // Email, web: https://support.metageek.com/hc/en-us/articles/201955754-Acceptable-Wi-Fi-Signal-Strengths
+        // Weak ss: https://support.bluesound.com/hc/en-us/articles/201940663-What-should-my-Wireless-Signal-Strength-be-for-best-performance-
+        double threshold = -70; // SignalStrength
         // Iterate all positions and calculate signal to all AP, discard those under the threshold
-        int removed =0;
         for(GeoPosition pos : positions) {
             Map<MACAddress, Double> signalMap = new HashMap<>();
 
@@ -36,14 +38,12 @@ public class RadioMapModel {
                 double signalStrength = computeSignalStrength(distance);
                 if(signalStrength > threshold) {
                     signalMap.put(ap_mac, signalStrength);
-                } else {
-                    removed++;
                 }
 
             }
             radioMap.add(new RadioEntry(pos, signalMap));
         }
-        System.out.println("Size: " + radioMap.size() + " Removed: " + removed);
+        assert radioMap.size() > 0;
         return radioMap;
     }
 
